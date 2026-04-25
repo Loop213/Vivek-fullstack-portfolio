@@ -54,7 +54,7 @@ function AdminDashboardPage() {
       } catch (error) {
         if (error.response?.status === 401) {
           logout();
-          navigate("/admin", { replace: true });
+          navigate("/admin", { replace: true, state: { forceLogin: true } });
         } else {
           pushToast({
             title: "Could not load dashboard",

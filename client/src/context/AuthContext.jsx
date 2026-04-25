@@ -37,11 +37,18 @@ export function AuthProvider({ children }) {
     setToken("");
   };
 
+  const resetAuth = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    setAuthToken("");
+    setToken("");
+  };
+
   const value = useMemo(
     () => ({
       token,
       login,
       logout,
+      resetAuth,
       isAuthenticated: Boolean(token),
       isBootstrapping
     }),

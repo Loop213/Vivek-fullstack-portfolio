@@ -9,10 +9,16 @@ function AdminLoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, resetAuth } = useAuth();
   const [credentials, setCredentials] = useState({ email: "admin@example.com", password: "Admin@12345" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (location.state?.forceLogin) {
+      resetAuth();
+    }
+  }, [location.state, resetAuth]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -34,6 +40,7 @@ function AdminLoginPage() {
       await login(credentials);
       navigate(location.state?.from || "/admin/dashboard", { replace: true });
     } catch (error) {
+      resetAuth();
       const apiMessage = error.response?.data?.message;
       setErrorMessage(
         apiMessage?.toLowerCase().includes("invalid") ? "Invalid password or email." : apiMessage || "Login failed."
