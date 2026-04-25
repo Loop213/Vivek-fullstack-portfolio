@@ -25,6 +25,7 @@ export function AuthProvider({ children }) {
     );
 
     const nextToken = response.data.token;
+    setAuthToken(nextToken);
     localStorage.setItem(TOKEN_KEY, nextToken);
     setToken(nextToken);
 
