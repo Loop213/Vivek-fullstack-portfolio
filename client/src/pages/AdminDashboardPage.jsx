@@ -17,6 +17,7 @@ const emptyProject = {
   id: "",
   title: "",
   description: "",
+  imageUrl: "",
   url: "",
   githubUrl: "",
   liveUrl: "",
@@ -120,6 +121,7 @@ function AdminDashboardPage() {
       const projectPayload = {
         title: newProject.title.trim(),
         description: newProject.description.trim(),
+        imageUrl: newProject.imageUrl.trim(),
         url: newProject.url.trim(),
         githubUrl: (newProject.githubUrl || newProject.url).trim(),
         liveUrl: newProject.liveUrl.trim(),
@@ -167,6 +169,7 @@ function AdminDashboardPage() {
       id: project.id || project._id,
       title: project.title || "",
       description: project.description || "",
+      imageUrl: project.imageUrl || "",
       url: project.url || project.githubUrl || "",
       githubUrl: project.githubUrl || project.url || "",
       liveUrl: project.liveUrl || "",
@@ -189,6 +192,7 @@ function AdminDashboardPage() {
       await api.put(`/projects/${editingProject.id}`, {
         title: editingProject.title.trim(),
         description: editingProject.description.trim(),
+        imageUrl: editingProject.imageUrl.trim(),
         url: editingProject.url.trim(),
         githubUrl: editingProject.githubUrl.trim(),
         liveUrl: editingProject.liveUrl.trim(),
@@ -265,6 +269,7 @@ function AdminDashboardPage() {
           onUpdateProject={handleUpdateProject}
           onDeleteProject={handleDeleteProject}
           isSaving={isSavingProject}
+          pushToast={pushToast}
         />
     ),
     appearance: (

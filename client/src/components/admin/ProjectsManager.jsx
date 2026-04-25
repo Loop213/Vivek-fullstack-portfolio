@@ -1,6 +1,7 @@
-import { ExternalLink, Github, PencilLine, Trash2, X } from "lucide-react";
+import { ExternalLink, Github, ImagePlus, PencilLine, Trash2, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getProjectGithubUrl, getProjectHighlights, getProjectId, getProjectLiveUrl, getProjectTechStack } from "../../lib/projects";
+import { uploadImageAsset } from "../../lib/uploads";
 
 function ProjectsManager({
   projects,
@@ -12,8 +13,25 @@ function ProjectsManager({
   onStartEditProject,
   onUpdateProject,
   onDeleteProject,
-  isSaving
+  isSaving,
+  pushToast
 }) {
+  const handleImageUpload = async (file, update) => {
+    if (!file) return;
+
+    try {
+      const { imageUrl } = await uploadImageAsset(file, "portfolio/projects");
+      update("imageUrl", imageUrl);
+      pushToast?.({ title: "Image uploaded", description: "Cloudinary image added to the project.", tone: "success" });
+    } catch (error) {
+      pushToast?.({
+        title: "Upload failed",
+        description: error.response?.data?.message || error.message || "Could not upload project image.",
+        tone: "error"
+      });
+    }
+  };
+
   const renderProjectForm = (project, update) => (
     <div className="grid gap-4">
       <div className="grid gap-4 md:grid-cols-2">
@@ -24,6 +42,14 @@ function ProjectsManager({
       <div className="grid gap-4 md:grid-cols-2">
         <input value={project.liveUrl} onChange={(event) => update("liveUrl", event.target.value)} className="input-field" placeholder="Live URL" />
         <input value={project.url || ""} onChange={(event) => update("url", event.target.value)} className="input-field" placeholder="Primary project URL" />
+      </div>
+      <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+        <input value={project.imageUrl || ""} onChange={(event) => update("imageUrl", event.target.value)} className="input-field" placeholder="Project image URL" />
+        <label className="secondary-button cursor-pointer py-3 text-sm">
+          <ImagePlus size={14} />
+          Upload image
+          <input type="file" accept="image/png,image/jpeg,image/jpg,image/webp" className="hidden" onChange={(event) => handleImageUpload(event.target.files?.[0], update)} />
+        </label>
       </div>
       <div className="grid gap-4 md:grid-cols-[1fr_140px]">
         <input value={project.techStackInput} onChange={(event) => update("techStackInput", event.target.value)} className="input-field" placeholder="Tech stack, comma separated" />
@@ -106,6 +132,13 @@ function ProjectsManager({
                     </span>
                   </div>
                   <p className="mt-3 text-sm leading-7 text-[var(--muted)]">{project.description || "No description available."}</p>
+                  {project.imageUrl ? (
+                    <img
+                      src={project.imageUrl}
+                      alt={project.title}
+                      className="mt-4 h-44 w-full rounded-3xl object-cover"
+                    />
+                  ) : null}
                 </div>
 
                 <div className="flex flex-wrap gap-2">

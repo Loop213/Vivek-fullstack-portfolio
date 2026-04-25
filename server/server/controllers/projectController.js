@@ -7,6 +7,7 @@ function normalizeManualProject(project) {
   return {
     ...project.toObject(),
     id: project._id.toString(),
+    imageUrl: project.imageUrl || "",
     githubUrl: project.githubUrl || project.url,
     liveUrl: project.liveUrl || "",
     source: "manual"
@@ -22,6 +23,7 @@ function mergeGitHubProjects(githubProjects, overrides, { includeHidden = false 
         ...project,
         title: hasText(override?.title) ? override.title : project.title,
         description: hasText(override?.description) ? override.description : project.description,
+        imageUrl: hasText(override?.imageUrl) ? override.imageUrl : project.imageUrl || "",
         url: hasText(override?.url) ? override.url : project.url,
         githubUrl: hasText(override?.githubUrl) ? override.githubUrl : project.githubUrl || project.url,
         liveUrl: hasText(override?.liveUrl) ? override.liveUrl : project.liveUrl || "",
@@ -106,6 +108,7 @@ async function updateProject(req, res) {
       githubId: id,
       title: req.body.title || "",
       description: req.body.description || "",
+      imageUrl: req.body.imageUrl || "",
       url: req.body.url || req.body.githubUrl || "",
       githubUrl: req.body.githubUrl || req.body.url || "",
       liveUrl: req.body.liveUrl || "",

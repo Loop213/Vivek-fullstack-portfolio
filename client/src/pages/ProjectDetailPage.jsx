@@ -5,7 +5,7 @@ import api from "../lib/api";
 import RouteLoader from "../components/RouteLoader";
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../context/ThemeContext";
-import { getProjectGithubUrl, getProjectHighlights, getProjectLiveUrl, getProjectTechStack } from "../lib/projects";
+import { getProjectGithubUrl, getProjectHighlights, getProjectImageUrl, getProjectLiveUrl, getProjectTechStack } from "../lib/projects";
 
 function ProjectDetailPage() {
   const { projectId } = useParams();
@@ -32,6 +32,7 @@ function ProjectDetailPage() {
   const techStack = useMemo(() => (project ? getProjectTechStack(project) : []), [project]);
   const highlights = useMemo(() => (project ? getProjectHighlights(project) : []), [project]);
   const githubUrl = project ? getProjectGithubUrl(project) : "";
+  const imageUrl = project ? getProjectImageUrl(project) : "";
   const liveUrl = project ? getProjectLiveUrl(project) : "";
   const updatedDate = project?.updatedAt
     ? new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(project.updatedAt))
@@ -80,6 +81,7 @@ function ProjectDetailPage() {
             </div>
 
             <div>
+              {imageUrl ? <img src={imageUrl} alt={project.title} className="mb-6 h-72 w-full rounded-[28px] object-cover shadow-[var(--shadow)]" /> : null}
               <h1 className="font-display text-4xl font-bold leading-tight text-[var(--text)] sm:text-6xl">
                 {project.title}
               </h1>

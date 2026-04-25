@@ -5,6 +5,7 @@ const projectOverrideSchema = new mongoose.Schema(
     githubId: { type: String, required: true, unique: true },
     title: { type: String, default: "" },
     description: { type: String, default: "" },
+    imageUrl: { type: String, default: "" },
     url: { type: String, default: "" },
     githubUrl: { type: String, default: "" },
     liveUrl: { type: String, default: "" },

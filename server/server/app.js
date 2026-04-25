@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
 const projectRoutes = require("./routes/projectRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/api", authRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/upload", uploadRoutes);
 
 app.use((error, _req, res, _next) => {
   console.error(error);

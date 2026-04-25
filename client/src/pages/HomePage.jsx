@@ -10,7 +10,7 @@ import SocialDock from "../components/SocialDock";
 import PortfolioNavbar from "../components/PortfolioNavbar";
 import PortfolioFooter from "../components/PortfolioFooter";
 import { useTheme } from "../context/ThemeContext";
-import { getProjectId, getProjectLiveUrl, getProjectTechStack } from "../lib/projects";
+import { getProjectId, getProjectImageUrl, getProjectLiveUrl, getProjectTechStack } from "../lib/projects";
 
 const FullThreePortfolio = lazy(() => import("../components/experience/FullThreePortfolio"));
 
@@ -46,12 +46,14 @@ function SectionHeader({ eyebrow, title, description }) {
 function ProjectCard({ project }) {
   const liveUrl = getProjectLiveUrl(project);
   const techStack = getProjectTechStack(project);
+  const imageUrl = getProjectImageUrl(project);
 
   return (
     <Link
       to={`/projects/${encodeURIComponent(getProjectId(project))}`}
       className="group rounded-[28px] border border-white/10 bg-[var(--card)]/80 p-6 shadow-[var(--shadow)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1.5 hover:border-[var(--primary)]/35 hover:shadow-[0_28px_90px_rgba(15,23,42,0.16)]"
     >
+      {imageUrl ? <img src={imageUrl} alt={project.title} className="mb-5 h-48 w-full rounded-[22px] object-cover" /> : null}
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-display text-2xl font-semibold text-[var(--text)]">{project.title}</p>

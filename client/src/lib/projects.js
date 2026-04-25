@@ -10,6 +10,10 @@ export function getProjectLiveUrl(project) {
   return project.liveUrl || project.demoUrl || "";
 }
 
+export function getProjectImageUrl(project) {
+  return project.imageUrl || "";
+}
+
 export function getProjectTechStack(project) {
   return (project.techStack || [project.language]).filter(Boolean).slice(0, 8);
 }

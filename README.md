@@ -7,6 +7,7 @@ A full-stack 3D interactive resume website built with React, React Three Fiber, 
 - Immersive 3D resume scene with clickable sections and animated camera moves
 - Dynamic GitHub project sync with MongoDB fallback
 - Admin dashboard with JWT login and live resume/project editing
+- Cloudinary-backed avatar and project image uploads from the admin dashboard
 - Dark/light mode, particles, loading states, typing intro, and responsive layout
 
 ## Folder Structure
@@ -32,7 +33,7 @@ npm install
 - `cp server/.env.example server/.env`
 - `cp client/.env.example client/.env`
 
-3. Update the MongoDB and JWT values in the env files.
+3. Update the MongoDB, JWT, and Cloudinary values in the env files.
 
 4. Start the backend:
 
@@ -55,6 +56,14 @@ The server seeds an admin user on first run using:
 
 Change those values in `server/.env` before first launch.
 
+## Cloudinary Uploads
+
+Set these backend environment variables to enable hosted image uploads for avatars and project cards:
+
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+
 ## API Routes
 
 - `POST /api/login`
@@ -62,7 +71,9 @@ Change those values in `server/.env` before first launch.
 - `PUT /api/resume`
 - `GET /api/projects`
 - `POST /api/projects`
+- `PUT /api/projects/:id`
 - `DELETE /api/projects/:id`
+- `POST /api/upload/image`
 
 ## Deployment
 

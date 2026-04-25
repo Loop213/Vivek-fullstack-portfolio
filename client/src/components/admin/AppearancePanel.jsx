@@ -2,6 +2,7 @@ import { Box, ImagePlus, Layers3, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import AvatarFrame from "../AvatarFrame";
 import { useToast } from "../../context/ToastContext";
+import { uploadImageAsset } from "../../lib/uploads";
 
 const maxAvatarSize = 2 * 1024 * 1024;
 const allowedAvatarTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -9,6 +10,7 @@ const allowedAvatarTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"
 function AppearancePanel({ resume, setResume, onSave, isSaving }) {
   const { pushToast } = useToast();
   const [previewUrl, setPreviewUrl] = useState(resume.avatarUrl || "");
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   useEffect(() => {
     setPreviewUrl(resume.avatarUrl || "");
@@ -19,7 +21,7 @@ function AppearancePanel({ resume, setResume, onSave, isSaving }) {
     setResume((current) => ({ ...current, avatarUrl: value }));
   };
 
-  const handleAvatarUpload = (event) => {
+  const handleAvatarUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -35,15 +37,21 @@ function AppearancePanel({ resume, setResume, onSave, isSaving }) {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      updateAvatar(reader.result);
-      pushToast({ title: "Avatar ready", description: "Preview updated. Save appearance to persist it.", tone: "success" });
-    };
-    reader.onerror = () => {
-      pushToast({ title: "Upload failed", description: "Could not read the selected image.", tone: "error" });
-    };
-    reader.readAsDataURL(file);
+    try {
+      setIsUploadingAvatar(true);
+      const { imageUrl } = await uploadImageAsset(file, "portfolio/avatar");
+      updateAvatar(imageUrl);
+      pushToast({ title: "Avatar uploaded", description: "Cloudinary image is ready. Save appearance to persist it.", tone: "success" });
+    } catch (error) {
+      pushToast({
+        title: "Upload failed",
+        description: error.response?.data?.message || error.message || "Could not upload the selected image.",
+        tone: "error"
+      });
+    } finally {
+      setIsUploadingAvatar(false);
+      event.target.value = "";
+    }
   };
 
   return (
@@ -73,7 +81,7 @@ function AppearancePanel({ resume, setResume, onSave, isSaving }) {
               value={resume.avatarUrl || ""}
               onChange={(event) => updateAvatar(event.target.value)}
               className="input-field"
-              placeholder="https://example.com/avatar.jpg or uploaded image data"
+              placeholder="https://res.cloudinary.com/your-cloud/image/upload/..."
             />
           </label>
 
@@ -83,9 +91,10 @@ function AppearancePanel({ resume, setResume, onSave, isSaving }) {
               type="file"
               accept="image/png,image/jpeg,image/jpg,image/webp"
               onChange={handleAvatarUpload}
+              disabled={isUploadingAvatar}
               className="block w-full rounded-lg border border-[var(--border)] bg-[var(--card-soft)] p-3 text-sm text-[var(--muted)] file:mr-4 file:rounded-md file:border-0 file:bg-[var(--primary)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
             />
-            <p className="text-xs text-[var(--muted)]">JPG, PNG, or WEBP. Max size 2MB.</p>
+            <p className="text-xs text-[var(--muted)]">{isUploadingAvatar ? "Uploading to Cloudinary..." : "JPG, PNG, or WEBP. Max size 2MB."}</p>
           </label>
 
           <div className="mt-6 rounded-lg border border-[var(--border)] bg-[var(--card-soft)] p-5">
